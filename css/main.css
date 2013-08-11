@@ -1,0 +1,22 @@
+body {
+	margin: 0px;
+}
+
+#testbar
+{
+	background-color:#D2E0E6;
+	margin: 1em;
+	margin-top: 0em;
+	padding: 0.5em;
+	padding-right: 1em;
+	text-align: right;
+	border-radius: 0 0 5px 5px;
+	-moz-border-radius: 0 0 5px 5px;
+	-webkit-border-bottom-right-radius: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+}
+
+a.testbar:link,a.testbar:visited,a.testbar:hover,a.testbar:active
+{
+	color:#528CE0;
+}
