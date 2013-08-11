@@ -34,6 +34,11 @@ JiraApi.prototype.getVersion = function(callback, project, fixVersionId) {
 	this.getData(callback, uriSuffix)
 }
 
+JiraApi.prototype.getIssue = function(callback, issue) {
+	var uriSuffix = "issue/" + issue;
+	this.getData(callback, uriSuffix)
+}
+
 JiraApi.prototype.getData = function(callback, type) {
 	var randomFunctionName = JiraApi.getRandomFunction(callback);
 	if (type.indexOf("?") == -1) {

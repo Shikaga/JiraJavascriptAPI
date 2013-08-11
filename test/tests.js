@@ -7,6 +7,12 @@ QUnit.module('JiraApi Tests', {
 		threeVersions = [{"self":"https://jira.secondlife.com/rest/api/latest/version/10451","id":"10451","description":"Any of these issues that are applicable will be addressed in the Snowstorm project.","name":"Snowglobe mysterious future","archived":false,"released":false},
 			{"self":"https://jira.secondlife.com/rest/api/latest/version/10571","id":"10571","description":"Viewer 2.0 rebase of Snowglobe; beta versions available, but no release will be produced.","name":"Snowglobe 2.0","archived":false,"released":false},
 			{"self":"https://jira.secondlife.com/rest/api/latest/version/10713","id":"10713","name":"Snowglobe 1.5","archived":false,"released":false}]
+
+		fourJiras = {"expand":"schema,names","startAt":0,"maxResults":1000,"total":22,"issues":[
+			{"expand":"editmeta,renderedFields,transitions,changelog,operations","id":"36910","self":"https://jira.secondlife.com/rest/api/latest/issue/36910","key":"SNOW-135"},
+			{"expand":"editmeta,renderedFields,transitions,changelog,operations","id":"32637","self":"https://jira.secondlife.com/rest/api/latest/issue/32637","key":"SNOW-57"},
+			{"expand":"editmeta,renderedFields,transitions,changelog,operations","id":"33550","self":"https://jira.secondlife.com/rest/api/latest/issue/33550","key":"SNOW-56"},
+			{"expand":"editmeta,renderedFields,transitions,changelog,operations","id":"33459","self":"https://jira.secondlife.com/rest/api/latest/issue/33459","key":"SNOW-55"}]};
 		jQuery.ajax = sinon.spy();
 	},
 	teardown: function() {
@@ -44,11 +50,7 @@ asyncTest("requests sprints when invoked", function() {
 	},0);
 });
 
-asyncTest("requests sprint when invoked", function() {
-	//https://jira.secondlife.com/rest/api/latest/search?
-	// jsonp-callback=_jiraProcessData_X&fields=key&
-	// jql=project%3DSNOW+AND+fixversion%3D10571
-	// &maxResults=1000
+asyncTest("requests sprint jiras when invoked", function() {
 	expect(8);
 	var sprintIssues = undefined;
 
@@ -58,11 +60,27 @@ asyncTest("requests sprint when invoked", function() {
 	assertDataRequested("fixversion=10571");
 
 	setTimeout(function() {
-		callbackData(threeVersions);
-		equal(3,sprintIssues.length, "Correct number of issues")
+		callbackData(fourJiras);
+		equal(4,sprintIssues.issues.length, "Correct number of issues")
 		start();
 	},0);
 });
+
+asyncTest("requests jira when invoked", function() {
+	expect(4);
+	var sprintIssues = undefined;
+
+	var ja = new JiraApi("https://jira.secondlife.com");
+	ja.getIssue(function(data) {sprintIssues = data}, "SNOW-135");
+	assertDataRequested("https://jira.secondlife.com/rest/api/latest/issue/SNOW-135");
+
+	setTimeout(function() {
+		callbackData(fourJiras);
+		//equal(4,sprintIssues.issues.length, "Correct number of issues")
+		start();
+	},0);
+});
+
 
 
 
