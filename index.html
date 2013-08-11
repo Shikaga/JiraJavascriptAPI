@@ -2,10 +2,16 @@
 	<head>
 		<script type="text/javascript" src="js/main.js"></script>
 		<title>New Development Project</title>
+		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script src="js/JiraApi.js"></script>
 		<link rel="stylesheet" href="css/main.css">
 	</head>
 	<body>
 		<div id="testbar"><a class="testbar" href="test/test.html" target="_blank">Run the Tests!</a></div>
 		Hello World!
 	</body>
+	<script>
+		var ja = new JiraApi("https://jira.secondlife.com");
+		ja.getProjects(function(data) {console.log(data)});
+	</script>
 </html>
