@@ -10,7 +10,10 @@ JiraApi.getRandomString = function() {
 JiraApi.getRandomFunction = function(callback) {
 	var randomString = this.getRandomString();
 	var functionName = "cb" + randomString;
-	JiraApi[functionName] = function(data) {callback(data)};
+	JiraApi[functionName] = function(data) {
+		delete window["JiraApi"][functionName];
+		callback(data)
+	};
 	return "JiraApi." + functionName;
 }
 
@@ -18,12 +21,29 @@ JiraApi.prototype.getProjects = function(callback) {
 	this.getData(callback, "project")
 }
 
+JiraApi.prototype.getVersions = function(callback, project) {
+	var uriSuffix = "project/" + project + "/versions";
+	this.getData(callback, uriSuffix)
+}
+
+JiraApi.prototype.getVersion = function(callback, project, fixVersionId) {
+	//https://jira.secondlife.com/rest/api/latest/search?
+	// jsonp-callback=_jiraProcessData_X
+	// &fields=key&
+	var uriSuffix = "search?jql=project=" + project + "+AND+fixversion=" + fixVersionId + "&maxResults=1000";
+	this.getData(callback, uriSuffix)
+}
+
 JiraApi.prototype.getData = function(callback, type) {
 	var randomFunctionName = JiraApi.getRandomFunction(callback);
-	var callbackAppend = "?jsonp-callback=" + randomFunctionName;
+	if (type.indexOf("?") == -1) {
+		var callbackAppend = "?jsonp-callback=" + randomFunctionName;
+	} else {
+		var callbackAppend = "&jsonp-callback=" + randomFunctionName;
+	}
 	$.ajax({
 		type: "GET",
-		url: this.jsonApiUrl + "project" + callbackAppend,
+		url: this.jsonApiUrl + type + callbackAppend,
 		contentType: "application/javascript; charset=utf-8",
 		dataType: "jsonp",
 		success: function (data) { },
